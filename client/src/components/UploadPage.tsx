@@ -12,6 +12,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { FormControl, FormLabel } from "@chakra-ui/react";
+import Navbar from "./Navbar";
 import { useState, useEffect } from "react";
 
 interface UploadedVideo {
@@ -53,7 +54,7 @@ const UploadPage: React.FC<UploadProps> = ({ user, onGoBack }) => {
   const [duration, setDuration] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch("/videos")
+    fetch("http://98.70.25.253:3001/videos")
       .then((res) => res.json())
       .then((data) => setUploadedVideos(data))
       .catch((err) => console.error("Error fetching videos:", err));
@@ -147,7 +148,7 @@ const UploadPage: React.FC<UploadProps> = ({ user, onGoBack }) => {
     }
 
     try {
-      const res = await fetch("/api/social/", {
+      const res = await fetch("http://98.70.25.253:3001/", {
         method: "POST",
         body: formData,
       });
@@ -175,7 +176,8 @@ const UploadPage: React.FC<UploadProps> = ({ user, onGoBack }) => {
   };
 
   return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")} py={12} px={4}>
+    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")} pt="80px" px={4}>
+      <Navbar />
       <Center>
         <Box
           w="full"

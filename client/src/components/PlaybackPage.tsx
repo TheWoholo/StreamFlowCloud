@@ -28,6 +28,7 @@ const PlaybackPage: React.FC<PlaybackPageProps> = ({
   onGoBack,
   onGoDashboard,
 }) => {
+  console.log("🎬 Video prop:", video);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [likes, setLikes] = useState<number>(0);
   const [comments, setComments] = useState<string[]>([]);
@@ -35,7 +36,7 @@ const PlaybackPage: React.FC<PlaybackPageProps> = ({
 
   // ✅ Fetch like/comment data
   useEffect(() => {
-    fetch(`/api/social/video/${video.id}`)
+    fetch(`http://98.70.25.253:3002/video/${video.id}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.likes !== undefined) setLikes(data.likes);
@@ -53,7 +54,7 @@ const PlaybackPage: React.FC<PlaybackPageProps> = ({
     if (playPromise?.catch) playPromise.catch(() => {});
 
     const handlePlay = () => {
-      fetch(`/api/social/video/${video.id}/view`, {
+      fetch(`http://98.70.25.253:3002/videos/${video.id}/view`, {
         method: "POST",
       }).catch(() => {});
     };
@@ -111,7 +112,7 @@ const PlaybackPage: React.FC<PlaybackPageProps> = ({
 
   // ✅ Like handler
   const handleLike = () => {
-    fetch(`/api/social/video/${video.id}/like`, {
+    fetch(`http://98.70.25.253:3002/videos/${video.id}/like`, {
       method: "POST",
     })
       .then(() => setLikes((prev) => prev + 1))
@@ -122,7 +123,7 @@ const PlaybackPage: React.FC<PlaybackPageProps> = ({
   const handleComment = () => {
     if (!newComment.trim()) return;
 
-    fetch(`/api/social/video/${video.id}/comment`, {
+    fetch(`http://98.70.25.253:3002/videos/${video.id}/comment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: newComment }),
@@ -165,7 +166,7 @@ const PlaybackPage: React.FC<PlaybackPageProps> = ({
             {video.title}
           </Text>
           <Text fontSize="sm" color="gray.400">
-            {video.channel ?? "Uploaded by you"} • {video.views ?? "0"} views
+            {video.channel ?? "Uploaded by You"} • {video.views ?? "0"} views
           </Text>
         </Box>
 

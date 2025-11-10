@@ -45,7 +45,7 @@ const LoginForm = ({ onLogin, onSwitchToRegister }: LoginFormProps) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch("http://98.70.25.253:3000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -83,7 +83,7 @@ const LoginForm = ({ onLogin, onSwitchToRegister }: LoginFormProps) => {
   const borderColor = useColorModeValue("gray.200", "gray.700");
 
   return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")} py={12} px={4}>
+    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")} pt="80px" px={4}>
       <Center>
         <Box
           w="full"

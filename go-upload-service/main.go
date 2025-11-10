@@ -137,7 +137,7 @@ func handleUpload(c *fiber.Ctx) error {
 			"description": description,
 			"author":      uploader,
 			"thumbnail":   "https://picsum.photos/seed/" + file.Filename + "/640/360",
-			"path":        videoPublicURL, // Use the public URL
+			"path":        "http://98.70.25.253:3001/uploads/" + file.Filename, // Use the public URL
 			"duration":    duration,
 		}).Post(socialsTargetURL)
 
@@ -210,24 +210,37 @@ func main() {
 	})
 
 	app.Get("/videos", func(c *fiber.Ctx) error {
-		files, err := os.ReadDir("./uploads")
-		if err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, "Cannot read uploads folder")
+		var socialData []struct {
+			ID        string `json:"_id"`
+			Title     string `json:"title"`
+			Thumbnail string `json:"thumbnail"`
+			Path      string `json:"path"`
+			Author    string `json:"author"`
+			Views     int    `json:"views"`
 		}
+
+		httpClient := resty.New()
+		resp, err := httpClient.R().
+			SetResult(&socialData).
+			Get(fmt.Sprintf("%s/videos", socialServiceURL))
+
+		if err != nil || resp.IsError() {
+			log.Println("❌ Failed to fetch videos:", err, resp.String())
+			return c.Status(500).JSON(fiber.Map{"error": "Failed to retrieve videos"})
+		}
+
 		var videos []map[string]string
-		for _, f := range files {
-			if !f.IsDir() {
-				name := f.Name()
-				if strings.HasSuffix(name, ".mp4") || strings.HasSuffix(name, ".mov") {
-					videos = append(videos, map[string]string{
-						"id":        name,
-						"title":     name,
-						"thumbnail": "https://picsum.photos/seed/" + name + "/640/360",
-						"src":       fmt.Sprintf("%s/uploads/%s", publicURL, name),
-					})
-				}
-			}
+		for _, v := range socialData {
+			videos = append(videos, map[string]string{
+				"id":        v.ID,
+				"title":     v.Title,
+				"thumbnail": v.Thumbnail,
+				"src":       v.Path,
+				"channel":   v.Author,
+				"views":     fmt.Sprintf("%d", v.Views),
+			})
 		}
+
 		return c.JSON(videos)
 	})
 
