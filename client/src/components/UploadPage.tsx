@@ -19,7 +19,7 @@ interface UploadedVideo {
   _id: string;
   title: string;
   description: string;
-  uploader: string;
+  author: string;
   path: string;
   thumbnail: string;
   duration: number;
@@ -238,7 +238,7 @@ const UploadPage: React.FC<UploadProps> = ({ user, onGoBack }) => {
             </VStack>
 
             <Heading size="md" mt={8}>
-              Uploaded Videos
+              Videos
             </Heading>
 
             {uploadedVideos.length === 0 ? (
@@ -264,7 +264,6 @@ const UploadPage: React.FC<UploadProps> = ({ user, onGoBack }) => {
                     />
                     <Box p={3}>
                       <Text fontWeight="bold">{video.title}</Text>
-                      <Text fontSize="xs" color="gray.400">By {user.username}</Text>
                     </Box>
                   </Box>
                 ))}
